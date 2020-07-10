@@ -666,7 +666,7 @@ function setcookie(res, name, val, secret, options) {
   var prev = res.getHeader("set-cookie") || [];
   var header = Array.isArray(prev) ? prev.concat(data) : [prev, data];
 
-  testLog("[setcookie]", req, res, `||||| ${prev} ||||| ${header}`);
+  console.log(`[setcookie]", ${prev} ||||| ${header}`);
 
   res.setHeader("set-cookie", header);
 }
