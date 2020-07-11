@@ -171,6 +171,11 @@ function session(options) {
 
   // generates the new session
   store.generate = function (req) {
+    console.log(
+      `[store.generate] -> NEW SESSION CREATED -> Request: ${req.path} ${
+        req.method
+      } ${JSON.stringify(req.body)}, |||${JSON.stringify(req.cookies)}|||`
+    );
     req.sessionID = generateId(req);
     req.session = new Session(req);
     req.session.cookie = new Cookie(cookieOptions);
