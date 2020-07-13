@@ -172,7 +172,7 @@ function session(options) {
   // generates the new session
   store.generate = function (req) {
     console.log(
-      `[store.generate] -> NEW SESSION CREATED -> Request: ${req.path} ${
+      `[store.generate] -> NEW SESSION GENERATED -> Request: ${req.path} ${
         req.method
       } ${JSON.stringify(req.body)}, |||${JSON.stringify(req.cookies)}|||`
     );
@@ -199,6 +199,7 @@ function session(options) {
   return function session(req, res, next) {
     // self-awareness
     if (req.session) {
+      console.log(`[session]", req.session already defined`);
       next();
       return;
     }
@@ -207,6 +208,7 @@ function session(options) {
     // the store has temporarily disconnected etc
     if (!storeReady) {
       debug("store is disconnected");
+      console.log(`[session]", store is disconnected`);
       next();
       return;
     }
@@ -487,6 +489,7 @@ function session(options) {
 
     // generate the session object
     debug("fetching %s", req.sessionID);
+    console.log(`[session - store.get], fetching session: ${req.sessionID}`);
     store.get(req.sessionID, function (err, sess) {
       // error handling
       if (err) {
@@ -498,12 +501,19 @@ function session(options) {
         }
 
         generate();
+        console.log(`[session - store.get - err], generating session`);
         // no session
       } else if (!sess) {
         debug("no session found");
+        console.log(`[session - store.get - !sess], generating session`);
         generate();
         // populate req.session
       } else {
+        console.log(
+          `[session - store.get - success!], found session ${JSON.stringify(
+            sess
+          )}`
+        );
         debug("session found");
         store.createSession(req, sess);
         originalId = req.sessionID;
@@ -546,13 +556,18 @@ function getcookie(req, name, secrets) {
 
   // read from cookie header
   if (header) {
+    console.log(`[session#getCookie1] ${JSON.stringify(headers)}`);
     var cookies = cookie.parse(header);
 
     raw = cookies[name];
 
+    console.log(`[session#getCookie2] ${raw}`);
+
     if (raw) {
       if (raw.substr(0, 2) === "s:") {
         val = unsigncookie(raw.slice(2), secrets);
+
+        console.log(`[session#getCookie3] ${val}`);
 
         if (val === false) {
           debug("cookie signature invalid");
@@ -568,6 +583,8 @@ function getcookie(req, name, secrets) {
   if (!val && req.signedCookies) {
     val = req.signedCookies[name];
 
+    console.log(`[session#getCookie4] ${val}`);
+
     if (val) {
       deprecate("cookie should be available in req.headers.cookie");
     }
@@ -576,6 +593,8 @@ function getcookie(req, name, secrets) {
   // back-compat read from cookieParser() cookies data
   if (!val && req.cookies) {
     raw = req.cookies[name];
+
+    console.log(`[session#getCookie5] ${raw}`);
 
     if (raw) {
       if (raw.substr(0, 2) === "s:") {
@@ -595,6 +614,7 @@ function getcookie(req, name, secrets) {
     }
   }
 
+  console.log(`[session#getCookie - result] ${val}`);
   return val;
 }
 
