@@ -92,7 +92,7 @@ var testLog = function (step, req, res, msg) {
     console.log(
       `[${step}][${res.locals.sequenceId}] Request: ${req.path} ${
         req.method
-      } ${JSON.stringify(req.body)} ---- ${msg}`
+      } ${JSON.stringify(req.body)} ---- ${req.sessionID} ---- ${msg}`
     );
   }
 };
@@ -238,7 +238,21 @@ function session(options) {
     req.sessionStore = store;
 
     // get the session ID from the cookie
+    console.log(
+      `[BEFORE ASSINGING req.sessionID][${
+        res.locals ? res.locals.sequenceId : "seqeuenceID undefiend"
+      }] ${JSON.stringify(req.body)}|||${JSON.stringify(req.cookies)}|||${
+        req.sessionID
+      }`
+    );
     var cookieId = (req.sessionID = getcookie(req, name, secrets));
+    console.log(
+      `[AFTER ASSINGING req.sessionID][${
+        res.locals ? res.locals.sequenceId : "seqeuenceID undefiend"
+      }] ${JSON.stringify(req.body)}|||${JSON.stringify(req.cookies)}|||${
+        req.sessionID
+      }`
+    );
 
     // set-cookie
     onHeaders(res, function () {
