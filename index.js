@@ -558,7 +558,7 @@ function getcookie(req, name, secrets) {
 
   // read from cookie header
   if (header) {
-    console.log(`[session#getCookie1] ${JSON.stringify(headers)}`);
+    console.log(`[session#getCookie1] ${JSON.stringify(header)}`);
     var cookies = cookie.parse(header);
 
     raw = cookies[name];
