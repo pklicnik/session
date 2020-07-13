@@ -66,6 +66,7 @@ Store.prototype.regenerate = function (req, fn) {
 
 Store.prototype.load = function (sid, fn) {
   var self = this;
+  console.log(`[Store.load] -> Request: ${sid}`);
   this.get(sid, function (err, sess) {
     if (err) return fn(err);
     if (!sess) return fn();

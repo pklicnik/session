@@ -381,6 +381,7 @@ function session(options) {
 
     // generate the session
     function generate() {
+      console.log(`[session#generate] Generating the store ${req.sessionID}`);
       store.generate(req);
       originalId = req.sessionID;
       originalHash = hash(req.session);
@@ -482,6 +483,7 @@ function session(options) {
     // generate a session if the browser doesn't send a sessionID
     if (!req.sessionID) {
       debug("no SID sent, generating session");
+      console.log(`[session - !req.sessionID], generating session`);
       generate();
       next();
       return;
